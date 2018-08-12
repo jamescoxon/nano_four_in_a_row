@@ -119,21 +119,21 @@ def receive_xrb(index, account, wallet_seed):
         return
 
     for block in rx_data:
-        print(block)
+        #print(block)
         block_hash = block
-        print(rx_data[block])
+        #print(rx_data[block])
         balance = int(rx_data[block]['amount'])
         source = rx_data[block]['source']
 
     previous = get_previous(str(account))
 
     current_balance = get_balance(previous)
-    print(current_balance)
+    #print(current_balance)
     new_balance = int(current_balance) + int(balance)
     hex_balance = hex(new_balance)
-    print(hex_balance)
+    #print(hex_balance)
     hex_final_balance = hex_balance[2:].upper().rjust(32, '0')
-    print(hex_final_balance)
+    #print(hex_final_balance)
 
     priv_key, pub_key = seed_account(wallet_seed, int(index))
     public_key = ed25519.SigningKey(priv_key).get_verifying_key().to_ascii(encoding="hex")
@@ -158,7 +158,7 @@ def receive_xrb(index, account, wallet_seed):
             "work" : "%s", "signature" : "%s" }' % \
     (previous, account, account, new_balance, block_hash, work, signature)
 
-    print(finished_block)
+    #print(finished_block)
 
     data = json.dumps({'action': 'process', 'block': finished_block})
     # print(data)
@@ -166,9 +166,9 @@ def receive_xrb(index, account, wallet_seed):
 
     block_reply = ws.recv()
 
-    print(block_reply)
+    #print(block_reply)
     ws.close()
-    print(new_balance)
+    #print(new_balance)
     return str(new_balance)
 
 
@@ -191,16 +191,16 @@ def open_xrb(index, account, wallet_seed):
 
     rx_data = get_pending(str(account))
     for block in rx_data:
-        print(block)
+        #print(block)
         block_hash = block
-        print(rx_data[block])
+        #print(rx_data[block])
         balance = int(rx_data[block]['amount'])
         source = rx_data[block]['source']
 
     hex_balance = hex(balance)
-    print(hex_balance)
+    #print(hex_balance)
     hex_final_balance = hex_balance[2:].upper().rjust(32, '0')
-    print(hex_final_balance)
+    #print(hex_final_balance)
 
     priv_key, pub_key = seed_account(wallet_seed, int(index))
     public_key = ed25519.SigningKey(priv_key).get_verifying_key().to_ascii(encoding="hex")
@@ -224,7 +224,7 @@ def open_xrb(index, account, wallet_seed):
     finished_block = '{ "type" : "state", "previous" : "0000000000000000000000000000000000000000000000000000000000000000", "representative" : "%s" , "account" : "%s", "balance" : "%s", "link" : "%s", \
             "work" : "%s", "signature" : "%s" }' % (account, account, balance, block_hash, work, signature)
 
-    print(finished_block)
+    #print(finished_block)
 
     data = json.dumps({'action': 'process', 'block': finished_block})
     # print(data)
@@ -232,7 +232,7 @@ def open_xrb(index, account, wallet_seed):
 
     block_reply = ws.recv()
 
-    print(block_reply)
+    #print(block_reply)
     ws.close()
 
 
@@ -244,13 +244,13 @@ def send_xrb(dest_account, amount, account, index, wallet_seed):
     previous = get_previous(str(account))
 
     current_balance = get_balance(previous)
-    print(current_balance)
+    #print(current_balance)
     new_balance = int(current_balance) - int(amount)
     hex_balance = hex(new_balance)
 
-    print(hex_balance)
+    #print(hex_balance)
     hex_final_balance = hex_balance[2:].upper().rjust(32, '0')
-    print(hex_final_balance)
+    #print(hex_final_balance)
 
     priv_key, pub_key = seed_account(wallet_seed, int(index))
     public_key = ed25519.SigningKey(priv_key).get_verifying_key().to_ascii(encoding="hex")
@@ -275,7 +275,7 @@ def send_xrb(dest_account, amount, account, index, wallet_seed):
             "work" : "%s", "signature" : "%s" }' % (
     previous, account, account, new_balance, dest_account, work, signature)
 
-    print(finished_block)
+    #print(finished_block)
 
     data = json.dumps({'action': 'process', 'block': finished_block})
     # print(data)
@@ -283,7 +283,7 @@ def send_xrb(dest_account, amount, account, index, wallet_seed):
 
     block_reply = ws.recv()
 
-    print(block_reply)
+    #print(block_reply)
     ws.close()
 
 
@@ -306,7 +306,7 @@ def get_previous(account):
     data = json.dumps({'action': 'accounts_frontiers', 'accounts': accounts_list})
     ws.send(data)
     result = ws.recv()
-    print(result)
+    #print(result)
     account_info = json.loads(str(result))
 
     ws.close()
@@ -326,7 +326,7 @@ def get_balance(hash):
     ws.send(data)
 
     block = ws.recv()
-    print("Received '%s'" % block)
+    #print("Received '%s'" % block)
     ws.close()
 
     rx_data = json.loads(str(block))
