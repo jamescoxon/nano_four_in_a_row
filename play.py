@@ -109,10 +109,9 @@ else:
     old_board = board.copy()
 
     print('Waiting for player 1 move')
-    if (len(previous) == 0):
-        while len(pending) == 0:
-            pending = nano.get_pending(str(account))
-            time.sleep(1)
+    while len(pending) == 0:
+        pending = nano.get_pending(str(account))
+        time.sleep(1)
 
     while len(pending) > 0:
         pending = nano.get_pending(str(account))
@@ -120,7 +119,7 @@ else:
         rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
 
     board = [int(x) for x in str(rx_amount)]
-    return_move = random.randint(0,9)
+    #return_move = random.randint(0,9)
     board[int(return_move)] += 1
 
     for x in range(len(old_board)):
@@ -157,10 +156,9 @@ while 1:
     old_board = board.copy()
 
     print('Waiting for reply')
-    if (len(previous) == 0):
-        while len(pending) == 0:
-            pending = nano.get_pending(str(account))
-            time.sleep(1)
+    while len(pending) == 0:
+        pending = nano.get_pending(str(account))
+        time.sleep(1)
 
     while len(pending) > 0:
         pending = nano.get_pending(str(account))
@@ -168,7 +166,7 @@ while 1:
         rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
 
     board = [int(x) for x in str(rx_amount)]
-    return_move = random.randint(0,9)
+    #return_move = random.randint(0,9)
     board[int(return_move)] += 1
 
     for x in range(len(old_board)):
