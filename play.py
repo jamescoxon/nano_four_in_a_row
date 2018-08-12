@@ -118,7 +118,12 @@ else:
         print(len(pending))
         rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
 
-    board = [int(x) for x in str(rx_amount)]
+    print(rx_amount)
+
+    board = str(rx_amount.split())
+    for x in board:
+        x = int(x)
+
     #return_move = random.randint(0,9)
     board[int(return_move)] += 1
 
@@ -165,7 +170,12 @@ while 1:
         print(len(pending))
         rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
 
-    board = [int(x) for x in str(rx_amount)]
+    print(rx_amount)
+
+    board = str(rx_amount.split())
+    for x in board:
+        x = int(x)
+
     #return_move = random.randint(0,9)
     board[int(return_move)] += 1
 
