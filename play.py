@@ -102,35 +102,36 @@ else:
             time.sleep(1)
 
     while len(pending) > 0:
-        pending = nano.get_pending(str(account))
-        print(len(pending))
         nano.receive_xrb(int(index), account, wallet_seed)
-
-    old_board = board.copy()
-
-    print('Waiting for player 1 move')
-    while len(pending) == 0:
-        pending = nano.get_pending(str(account))
-        time.sleep(1)
-
-    while len(pending) > 0:
         pending = nano.get_pending(str(account))
         print(len(pending))
-        rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
 
-    print(rx_amount)
+old_board = board.copy()
 
-    board = str(rx_amount).split()
-    for x in board:
-        x = int(x)
+print('Waiting for other player move')
+while len(pending) == 0:
+    pending = nano.get_pending(str(account))
+    time.sleep(1)
 
-    #return_move = random.randint(0,9)
-    board[int(return_move)] += 1
+rx_amount = "00000000000"
+while len(pending) > 0:
+    rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
+    pending = nano.get_pending(str(account))
+    print(len(pending))
+    print('Rx amount %s' % rx_amount)
 
-    for x in range(len(old_board)):
-        if board[x] == (int(old_board[x]) + 1):
-            board_matrix[board[x]][x] = '0'
-    print_matrix(board_matrix)
+print(rx_amount)
+old_board = board.copy()
+
+board = list(str(rx_amount[-10:]))
+for x in board:
+    x = int(x)
+print(board)
+
+for x in range(len(old_board)):
+    if board[x] == (int(old_board[x]) + 1):
+        board_matrix[board[x]][x] = '0'
+print_matrix(board_matrix)
 
 while 1:
     #Your Move
