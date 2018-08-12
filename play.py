@@ -120,7 +120,7 @@ else:
 
     print(rx_amount)
 
-    board = str(rx_amount.split())
+    board = str(rx_amount).split()
     for x in board:
         x = int(x)
 
@@ -172,7 +172,7 @@ while 1:
 
     print(rx_amount)
 
-    board = str(rx_amount.split())
+    board = str(rx_amount).split()
     for x in board:
         x = int(x)
 
