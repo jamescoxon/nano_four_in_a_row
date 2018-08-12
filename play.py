@@ -105,7 +105,8 @@ else:
         pending = nano.get_pending(str(account))
         print(len(pending))
         nano.receive_xrb(int(index), account, wallet_seed)
-   old_board = board.copy()
+
+    old_board = board.copy()
 
     print('Waiting for player 1 move')
     if (len(previous) == 0):
