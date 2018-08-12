@@ -88,10 +88,22 @@ while len(pending) > 0:
     print(len(pending))
     nano.receive_xrb(int(index), account, wallet_seed)
 
-target_account = input("Other players account address: ")
-print()
-print('Sending empty board 0000000000')
-#nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
+player = int(input("What player are you? (1 or 2): "))
+if player == 1:
+    target_account = input("Other players account address: ")
+    print()
+    print('Sending empty board 0000000000')
+    #nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
+else:
+    if (len(previous) == 0):
+        while len(pending) == 0:
+            pending = nano.get_pending(str(account))
+            time.sleep(1)
+
+    while len(pending) > 0:
+        pending = nano.get_pending(str(account))
+        print(len(pending))
+        nano.receive_xrb(int(index), account, wallet_seed)
 
 while 1:
     #Your Move
