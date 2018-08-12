@@ -168,7 +168,7 @@ def receive_xrb(index, account, wallet_seed):
 
     print(block_reply)
     ws.close()
-    return new_balance
+    return str(new_balance)
 
 
 def get_address(index, wallet_seed):
