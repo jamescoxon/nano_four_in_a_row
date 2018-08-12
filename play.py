@@ -123,6 +123,7 @@ while len(pending) > 0:
 
 print(rx_amount)
 old_board = board.copy()
+board = list(rx_amount[-10:])
 
 for position, char in enumerate(board):
      board[position] = int(char)    
@@ -173,8 +174,10 @@ while 1:
         pending = nano.get_pending(str(account))
         print(len(pending))
 
+
     print(rx_amount)
     old_board = board.copy()
+    board = list(rx_amount[-10:])
 
     for position, char in enumerate(board):
         board[position] = int(char)
