@@ -90,8 +90,9 @@ while len(pending) > 0:
     nano.receive_xrb(int(index), account, wallet_seed)
 
 player = int(input("What player are you? (1 or 2): "))
+target_account = input("Other players account address: ")
+
 if player == 1:
-    target_account = input("Other players account address: ")
     print()
     print('Sending empty board 0000000000')
     nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
@@ -123,9 +124,9 @@ while len(pending) > 0:
 print(rx_amount)
 old_board = board.copy()
 
-board = list(str(rx_amount[-10:]))
-for x in board:
-    x = int(x)
+for position, char in enumerate(board):
+     board[position] = int(char)    
+
 print(board)
 
 for x in range(len(old_board)):
@@ -166,19 +167,19 @@ while 1:
         pending = nano.get_pending(str(account))
         time.sleep(1)
 
+    print('Found reply')
     while len(pending) > 0:
+        rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
         pending = nano.get_pending(str(account))
         print(len(pending))
-        rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
 
     print(rx_amount)
+    old_board = board.copy()
 
-    board = str(rx_amount).split()
-    for x in board:
-        x = int(x)
+    for position, char in enumerate(board):
+        board[position] = int(char)
 
-    #return_move = random.randint(0,9)
-    board[int(return_move)] += 1
+    print(board)
 
     for x in range(len(old_board)):
         if board[x] == (int(old_board[x]) + 1):
