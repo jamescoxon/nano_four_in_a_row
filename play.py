@@ -46,6 +46,7 @@ if len(config_files) == 0:
     parser.add_section('wallet')
     parser.set('wallet', 'seed', wallet_seed)
     parser.set('wallet', 'index', '0')
+    index = 0
 
     parser.write(cfgfile)
     cfgfile.close()
@@ -93,7 +94,7 @@ if player == 1:
     target_account = input("Other players account address: ")
     print()
     print('Sending empty board 0000000000')
-    #nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
+    nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
 else:
     if (len(previous) == 0):
         while len(pending) == 0:
@@ -104,6 +105,27 @@ else:
         pending = nano.get_pending(str(account))
         print(len(pending))
         nano.receive_xrb(int(index), account, wallet_seed)
+   old_board = board.copy()
+
+    print('Waiting for player 1 move')
+    if (len(previous) == 0):
+        while len(pending) == 0:
+            pending = nano.get_pending(str(account))
+            time.sleep(1)
+
+    while len(pending) > 0:
+        pending = nano.get_pending(str(account))
+        print(len(pending))
+        rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
+
+    board = [int(x) for x in str(rx_amount)]
+    return_move = random.randint(0,9)
+    board[int(return_move)] += 1
+
+    for x in range(len(old_board)):
+        if board[x] == (int(old_board[x]) + 1):
+            board_matrix[board[x]][x] = '0'
+    print_matrix(board_matrix)
 
 while 1:
     #Your Move
@@ -131,6 +153,8 @@ while 1:
     nano.send_xrb(target_account, (10000000000 + board_amount), account, 0, wallet_seed)
 
     #await reply
+    old_board = board.copy()
+
     print('Waiting for reply')
     if (len(previous) == 0):
         while len(pending) == 0:
@@ -143,7 +167,6 @@ while 1:
         rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
 
     board = [int(x) for x in str(rx_amount)]
-    old_board = board.copy()
     return_move = random.randint(0,9)
     board[int(return_move)] += 1
 
