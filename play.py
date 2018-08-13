@@ -7,12 +7,26 @@ from configparser import SafeConfigParser
 from modules import nano
 
 def print_matrix(matrix):
-#    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
     line_num = 0
     print('#################')
     for x in reversed(matrix):
         print (x)
     print('#################')
+
+def get_reply():
+    while len(pending) > 0:
+        rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
+        pending = nano.get_pending(str(account))
+        print(len(pending))
+        print('Rx amount %s' % rx_amount)
+
+    return rx_amount
+
+def wait_for_reply():
+    while len(pending) == 0:
+       pending = nano.get_pending(str(account))
+       time.sleep(1)
 
 # start game
 print('Welcome to p2p Four in a Row on the Nano Network')
@@ -70,10 +84,7 @@ previous = nano.get_previous(str(account))
 #print(len(previous))
 pending = nano.get_pending(str(account))
 
-if (len(previous) == 0):
-    while len(pending) == 0:
-        pending = nano.get_pending(str(account))
-        time.sleep(1)
+wait_for_reply()
 
 pending = nano.get_pending(str(account))
 if (len(previous) == 0) and (len(pending) > 0):
@@ -97,11 +108,7 @@ if player == 1:
     print('Sending empty board 0000000000')
     nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
 else:
-    if (len(previous) == 0):
-        while len(pending) == 0:
-            pending = nano.get_pending(str(account))
-            time.sleep(1)
-
+    wait_for_reply()
     while len(pending) > 0:
         nano.receive_xrb(int(index), account, wallet_seed)
         pending = nano.get_pending(str(account))
@@ -110,16 +117,10 @@ else:
 old_board = board.copy()
 
 print('Waiting for other player move')
-while len(pending) == 0:
-    pending = nano.get_pending(str(account))
-    time.sleep(1)
+wait_for_reply()
 
 rx_amount = "00000000000"
-while len(pending) > 0:
-    rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
-    pending = nano.get_pending(str(account))
-    print(len(pending))
-    print('Rx amount %s' % rx_amount)
+rx_amount = get_reply()
 
 print(rx_amount)
 old_board = board.copy()
@@ -164,16 +165,11 @@ while 1:
     old_board = board.copy()
 
     print('Waiting for reply')
-    while len(pending) == 0:
-        pending = nano.get_pending(str(account))
-        time.sleep(1)
+    wait_for_reply()
 
     print('Found reply')
-    while len(pending) > 0:
-        rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
-        pending = nano.get_pending(str(account))
-        print(len(pending))
 
+    rx_amount = get_reply()
 
     print(rx_amount)
     old_board = board.copy()
