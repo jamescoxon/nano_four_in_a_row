@@ -23,7 +23,8 @@ def get_reply():
 
     return rx_amount
 
-def wait_for_reply():
+def wait_for_reply(account):
+    pending = nano.get_pending(str(account))
     while len(pending) == 0:
        pending = nano.get_pending(str(account))
        time.sleep(1)
@@ -82,9 +83,8 @@ print("Waiting for nano")
 previous = nano.get_previous(str(account))
 #print(previous)
 #print(len(previous))
-pending = nano.get_pending(str(account))
 
-wait_for_reply()
+#wait_for_reply(account)
 
 pending = nano.get_pending(str(account))
 if (len(previous) == 0) and (len(pending) > 0):
@@ -108,7 +108,7 @@ if player == 1:
     print('Sending empty board 0000000000')
     nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
 else:
-    wait_for_reply()
+    wait_for_reply(account)
     while len(pending) > 0:
         nano.receive_xrb(int(index), account, wallet_seed)
         pending = nano.get_pending(str(account))
@@ -117,7 +117,7 @@ else:
 old_board = board.copy()
 
 print('Waiting for other player move')
-wait_for_reply()
+wait_for_reply(account)
 
 rx_amount = "00000000000"
 rx_amount = get_reply()
@@ -165,7 +165,7 @@ while 1:
     old_board = board.copy()
 
     print('Waiting for reply')
-    wait_for_reply()
+    wait_for_reply(account)
 
     print('Found reply')
 
