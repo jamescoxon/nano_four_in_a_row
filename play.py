@@ -6,6 +6,9 @@ import binascii
 from configparser import SafeConfigParser
 from modules import nano
 
+BOARDWIDTH = 10
+BOARDHEIGHT = 10
+
 def print_matrix(matrix):
     os.system('cls' if os.name == 'nt' else 'clear')
     line_num = 0
@@ -28,7 +31,34 @@ def wait_for_reply(account):
     pending = nano.get_pending(str(account))
     while len(pending) == 0:
        pending = nano.get_pending(str(account))
-       time.sleep(1)
+       time.sleep(2)
+
+def isWinner(board, tile):
+    # check horizontal spaces
+    for y in range(BOARDHEIGHT):
+        for x in range(BOARDWIDTH - 3):
+            if board[x][y] == tile and board[x+1][y] == tile and board[x+2][y] == tile and board[x+3][y] == tile:
+                return True
+
+    # check vertical spaces
+    for x in range(BOARDWIDTH):
+        for y in range(BOARDHEIGHT - 3):
+            if board[x][y] == tile and board[x][y+1] == tile and board[x][y+2] == tile and board[x][y+3] == tile:
+                return True
+
+    # check / diagonal spaces
+    for x in range(BOARDWIDTH - 3):
+        for y in range(3, BOARDHEIGHT):
+            if board[x][y] == tile and board[x+1][y-1] == tile and board[x+2][y-2] == tile and board[x+3][y-3] == tile:
+                return True
+
+    # check \ diagonal spaces
+    for x in range(BOARDWIDTH - 3):
+        for y in range(BOARDHEIGHT - 3):
+            if board[x][y] == tile and board[x+1][y+1] == tile and board[x+2][y+2] == tile and board[x+3][y+3] == tile:
+                return True
+
+    return False
 
 # start game
 print('Welcome to p2p Four in a Row on the Nano Network')
@@ -46,8 +76,7 @@ print()
 
 #setup board
 board = [0,0,0,0,0,0,0,0,0,0]
-w, h = 10, 10
-board_matrix = [[' ' for x in range(w)] for y in range(h)]
+board_matrix = [[' ' for x in range(BOARDWIDTH)] for y in range(BOARDHEIGHT)]
 
 parser = SafeConfigParser()
 config_files = parser.read('config.ini')
@@ -162,6 +191,10 @@ while 1:
     print(board_amount)
     nano.send_xrb(target_account, (10000000000 + board_amount), account, 0, wallet_seed)
 
+    if isWinner(board_matrix, 'X') == True:
+        print("0 is the winner")
+        sys.exit()
+
     #await reply
     old_board = board.copy()
 
@@ -185,4 +218,7 @@ while 1:
         if board[x] == (int(old_board[x]) + 1):
             board_matrix[board[x]][x] = '0'
     print_matrix(board_matrix)
+    if isWinner(board_matrix, '0') == True:
+        print("0 is the winner")
+        sys.exit()
 
