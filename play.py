@@ -12,16 +12,13 @@ BOARDHEIGHT = 10
 def print_matrix(matrix):
     os.system('cls' if os.name == 'nt' else 'clear')
     line_num = 0
-    print('#################')
+    print('################################################')
     for x in range(0,10):
         matrix[0][x] = '%s' % x
 
-    for x in range(0,BOARDWIDTH):
-        matrix[0][x]
-
     for x in reversed(matrix):
         print (x)
-    print('#################')
+    print('################################################')
 
 def get_reply(account, index, wallet_seed):
     pending = nano.get_pending(str(account))
@@ -198,7 +195,7 @@ while 1:
     nano.send_xrb(target_account, (10000000000 + board_amount), account, 0, wallet_seed)
 
     if isWinner(board_matrix, 'X') == True:
-        print("0 is the winner")
+        print("You (X) is the winner")
         sys.exit()
 
     #await reply
@@ -225,6 +222,6 @@ while 1:
             board_matrix[board[x]][x] = '0'
     print_matrix(board_matrix)
     if isWinner(board_matrix, '0') == True:
-        print("0 is the winner")
+        print("They (0) is the winner")
         sys.exit()
 
