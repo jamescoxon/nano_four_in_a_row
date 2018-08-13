@@ -14,7 +14,8 @@ def print_matrix(matrix):
         print (x)
     print('#################')
 
-def get_reply():
+def get_reply(account, index, wallet_seed):
+    pending = nano.get_pending(str(account))
     while len(pending) > 0:
         rx_amount = nano.receive_xrb(int(index), account, wallet_seed)
         pending = nano.get_pending(str(account))
@@ -120,7 +121,7 @@ print('Waiting for other player move')
 wait_for_reply(account)
 
 rx_amount = "00000000000"
-rx_amount = get_reply()
+rx_amount = get_reply(account, index, wallet_seed)
 
 print(rx_amount)
 old_board = board.copy()
@@ -169,7 +170,7 @@ while 1:
 
     print('Found reply')
 
-    rx_amount = get_reply()
+    rx_amount = get_reply(account, index, wallet_seed)
 
     print(rx_amount)
     old_board = board.copy()
