@@ -1,4 +1,4 @@
-import random, os, time
+import random, os, time, sys
 from nano25519.nano25519 import ed25519_oop as ed25519
 from pyblake2 import blake2b
 from bitstring import BitArray
@@ -13,6 +13,12 @@ def print_matrix(matrix):
     os.system('cls' if os.name == 'nt' else 'clear')
     line_num = 0
     print('#################')
+    for x in range(0,10):
+        matrix[0][x] = '%s' % x
+
+    for x in range(0,BOARDWIDTH):
+        matrix[0][x]
+
     for x in reversed(matrix):
         print (x)
     print('#################')

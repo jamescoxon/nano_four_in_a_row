@@ -5,6 +5,7 @@ import binascii
 from bitstring import BitArray
 from pyblake2 import blake2b
 from nano25519.nano25519 import ed25519_oop as ed25519
+import ctypes
 
 def private_public(private):
     return ed25519.SigningKey(private).get_verifying_key().to_bytes()
@@ -293,6 +294,11 @@ def get_pow(hash):
     block_work = json.loads(str(ws.recv()))
     work = block_work['work']
     ws.close()
+
+#    lib=ctypes.CDLL("./libmpow.so")
+#    lib.pow_generate.restype = ctypes.c_char_p
+#    work = lib.pow_generate(ctypes.c_char_p(hash.encode("utf-8"))).decode("utf-8")
+#    print(work)
 
     return work
 
