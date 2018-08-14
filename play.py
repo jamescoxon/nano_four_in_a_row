@@ -5,6 +5,7 @@ from bitstring import BitArray
 import binascii
 from configparser import SafeConfigParser
 from modules import nano
+import pyqrcode
 
 BOARDWIDTH = 10
 BOARDHEIGHT = 10
@@ -116,6 +117,11 @@ account = nano.account_xrb(str(public_key))
 print("Account Address: ", account)
 
 print("Please send 1 nano to this address")
+data = 'xrb:' + account
+xrb_qr = pyqrcode.create(data, error='L', version=4, mode=None, encoding='iso-8859-1')
+list = []
+print(xrb_qr.terminal())
+
 print("Waiting for nano")
 
 previous = nano.get_previous(str(account))
@@ -123,7 +129,6 @@ pending = nano.get_pending(str(account))
 print(previous)
 if (len(previous) == 0) and (len(pending) == 0):
     wait_for_reply(account)
-
 
 pending = nano.get_pending(str(account))
 if (len(previous) == 0) and (len(pending) > 0):
