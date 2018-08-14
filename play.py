@@ -174,6 +174,7 @@ if player == 1:
     print('Sending empty board 0000000000')
     nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
 else:
+    print("Waiting for Player 1 to start the game")
     wait_for_reply(account)
     while len(pending) > 0:
         nano.receive_xrb(int(index), account, wallet_seed)
