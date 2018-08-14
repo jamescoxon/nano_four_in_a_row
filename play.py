@@ -36,6 +36,11 @@ def wait_for_reply(account):
        pending = nano.get_pending(str(account))
        time.sleep(2)
 
+# From http://inventwithpython.com/extra/fourinarow_text.py
+# Four-In-A-Row (a Connect Four clone)
+# http://inventwithpython.com/blog
+# By Al Sweigart al@inventwithpython.com
+
 def isWinner(board, tile):
     # check horizontal spaces
     for y in range(BOARDHEIGHT):
@@ -114,10 +119,6 @@ print("Please send 1 nano to this address")
 print("Waiting for nano")
 
 previous = nano.get_previous(str(account))
-#print(previous)
-#print(len(previous))
-
-#wait_for_reply(account)
 
 pending = nano.get_pending(str(account))
 if (len(previous) == 0) and (len(pending) > 0):
