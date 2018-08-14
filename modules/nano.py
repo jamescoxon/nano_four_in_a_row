@@ -5,7 +5,7 @@ import binascii
 from bitstring import BitArray
 from pyblake2 import blake2b
 from nano25519.nano25519 import ed25519_oop as ed25519
-import ctypes
+import ctypes, requests
 
 def private_public(private):
     return ed25519.SigningKey(private).get_verifying_key().to_bytes()
@@ -288,12 +288,18 @@ def send_xrb(dest_account, amount, account, index, wallet_seed):
 
 
 def get_pow(hash):
-    ws = create_connection('ws://yapraiwallet.space:8000')
-    data = json.dumps({'action': 'work_generate', 'hash': hash})
-    ws.send(data)
-    block_work = json.loads(str(ws.recv()))
-    work = block_work['work']
-    ws.close()
+    #ws = create_connection('ws://yapraiwallet.space:8000')
+    #data = json.dumps({'action': 'work_generate', 'hash': hash})
+    #ws.send(data)
+    #block_work = json.loads(str(ws.recv()))
+    #work = block_work['work']
+    #ws.close()
+    
+    json_request = '{"hash" : "%s" }' % hash
+    print(json_request)
+    r = requests.post('http://178.62.11.37/work', data = json_request)
+    rx = r.json()
+    work = rx['work']
 
 #    lib=ctypes.CDLL("./libmpow.so")
 #    lib.pow_generate.restype = ctypes.c_char_p
