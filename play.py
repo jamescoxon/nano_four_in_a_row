@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import random, os, time, sys
 from nano25519.nano25519 import ed25519_oop as ed25519
 from pyblake2 import blake2b
@@ -32,11 +34,15 @@ def get_reply(account, index, wallet_seed):
 
     return rx_amount
 
-def wait_for_reply(account):
+def wait_for_reply(account, with_plot=None):
     pending = nano.get_pending(str(account))
     while len(pending) == 0:
        pending = nano.get_pending(str(account))
        time.sleep(2)
+       print('.', end='', flush=True)
+       if with_plot is not None:
+           with_plot.pause(0.001)
+    print()
 
 # From http://inventwithpython.com/extra/fourinarow_text.py
 # Four-In-A-Row (a Connect Four clone)
@@ -117,40 +123,44 @@ public_key = str(binascii.hexlify(pub_key), 'ascii')
 account = nano.account_xrb(str(public_key))
 print("Account Address: ", account)
 
-print("Please send 1 nano to this address")
-try:
-    import matplotlib.image as mpimg
-    import matplotlib.pyplot as plt
-    # qr code gen
-    uri = "xrb:{account}?amount={raw}&label=Four%20In%20A%20Row&message=Thank%20you%20for%20playing&my&game!".format(account=account, raw=RAW_AMOUNT)
-    code = pyqrcode.create(uri, error='L', mode='binary', version=27)
-    
-    # display with tkinter (not working on macOS)
-    #code_xbm = code.xbm(scale=7, quiet_zone=5)
-    #top = tkinter.Tk()
-    #code_bmp = tkinter.BitmapImage(data=code_xbm)
-    #code_bmp.config(background="white")
-    #label = tkinter.Label(image=code_bmp)
-    #label.pack()
-    
-    # display with matplotlip
-    code.eps('qrcode.eps', scale=8, quiet_zone=7)
-    code_eps = mpimg.imread('qrcode.eps')
-    plt.imshow(code_eps)
-    plt.show(block=False)
-except Exception as e:
-    print(e)
-    data = 'xrb:' + account
-    xrb_qr = pyqrcode.create(data, error='L', version=4, mode=None, encoding='iso-8859-1')
-    print(xrb_qr.terminal())
-
-print("Waiting for nano")
-
 previous = nano.get_previous(str(account))
 pending = nano.get_pending(str(account))
-print(previous)
+#print(previous)
 if (len(previous) == 0) and (len(pending) == 0):
-    wait_for_reply(account)
+
+    print("Please send 0.000001 nano to this address")
+    try:
+        import matplotlib.image as mpimg
+        import matplotlib.pyplot as plt
+        # qr code gen
+        uri = "xrb:{account}?amount={raw}&label=Four%20In%20A%20Row&message=Thank%20you%20for%20playing&my&game!".format(account=account, raw=RAW_AMOUNT)
+        code = pyqrcode.create(uri, encoding='iso-8859-1')
+
+        # display with tkinter (not working on macOS)
+        #code_xbm = code.xbm(scale=7, quiet_zone=5)
+        #top = tkinter.Tk()
+        #code_bmp = tkinter.BitmapImage(data=code_xbm)
+        #code_bmp.config(background="white")
+        #label = tkinter.Label(image=code_bmp)
+        #label.pack()
+
+        # display with matplotlip
+        code.eps('qrcode.eps', scale=5, quiet_zone=7)
+        code_eps = mpimg.imread('qrcode.eps')
+        imgplot = plt.imshow(code_eps)
+        plt.ion()
+        plt.show()
+        plt.pause(0.001)
+    except Exception as e:
+        print(e)
+        data = 'xrb:' + account
+        xrb_qr = pyqrcode.create(data, encoding='iso-8859-1')
+        print(xrb_qr.terminal())
+
+    print('Waiting for nano to arrive at {}'.format(account))
+    wait_for_reply(account, with_plot=plt)
+else:
+    print('You already have enough balance, great!')
 
 pending = nano.get_pending(str(account))
 if (len(previous) == 0) and (len(pending) > 0):
@@ -170,10 +180,10 @@ player = int(input("What player are you? (1 or 2): "))
 target_account = input("Other players account address: ")
 
 if player == 1:
-    print()
-    print('Sending empty board 0000000000')
+    print('\nSending empty board 0000000000')
     nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
 else:
+    print('\nWaiting for player 1 to start')
     wait_for_reply(account)
     while len(pending) > 0:
         nano.receive_xrb(int(index), account, wallet_seed)
@@ -193,7 +203,7 @@ old_board = board.copy()
 board = list(rx_amount[-10:])
 
 for position, char in enumerate(board):
-     board[position] = int(char)    
+     board[position] = int(char)
 
 print(board)
 
@@ -227,10 +237,11 @@ while 1:
          board_index += 1
 
     print(board_amount)
+    print('Sending to other player with a nano transaction')
     nano.send_xrb(target_account, (10000000000 + board_amount), account, 0, wallet_seed)
 
     if isWinner(board_matrix, 'X') == True:
-        print("You (X) is the winner")
+        print("You (X) are the winner")
         sys.exit()
 
     #await reply
@@ -257,6 +268,6 @@ while 1:
             board_matrix[board[x]][x] = '0'
     print_matrix(board_matrix)
     if isWinner(board_matrix, '0') == True:
-        print("They (0) is the winner")
+        print("They (0) are the winner")
         sys.exit()
 
