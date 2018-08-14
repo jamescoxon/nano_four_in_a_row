@@ -1,0 +1,6 @@
+pyblake2
+bitstring
+binascii
+configparser
+pyqrcode
+matplotlib
