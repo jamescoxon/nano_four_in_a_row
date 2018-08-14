@@ -121,6 +121,7 @@ priv_key, pub_key = nano.seed_account(str(wallet_seed), 0)
 public_key = str(binascii.hexlify(pub_key), 'ascii')
 
 account = nano.account_xrb(str(public_key))
+
 print("Account Address: ", account)
 
 previous = nano.get_previous(str(account))
@@ -183,7 +184,7 @@ if player == 1:
     print('\nSending empty board 0000000000')
     nano.send_xrb(target_account, 10000000000, account, 0, wallet_seed)
 else:
-    print('\nWaiting for player 1 to start')
+    print("\nWaiting for Player 1 to start the game")
     wait_for_reply(account)
     while len(pending) > 0:
         nano.receive_xrb(int(index), account, wallet_seed)

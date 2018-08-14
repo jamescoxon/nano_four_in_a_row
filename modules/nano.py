@@ -1,4 +1,4 @@
-import dataset, time, json, random
+import time, json, random
 from websocket import create_connection
 
 import binascii
@@ -294,12 +294,17 @@ def get_pow(hash):
     #block_work = json.loads(str(ws.recv()))
     #work = block_work['work']
     #ws.close()
-    
-    json_request = '{"hash" : "%s" }' % hash
-    print(json_request)
-    r = requests.post('http://178.62.11.37/work', data = json_request)
-    rx = r.json()
-    work = rx['work']
+    work = ''
+    while work == '' :
+      try:   
+        json_request = '{"hash" : "%s" }' % hash
+        print(json_request)
+        print("Generating PoW via Work Server")
+        r = requests.post('http://178.62.11.37/work', data = json_request)
+        rx = r.json()
+        work = rx['work']
+      except:
+        pass
 
 #    lib=ctypes.CDLL("./libmpow.so")
 #    lib.pow_generate.restype = ctypes.c_char_p
