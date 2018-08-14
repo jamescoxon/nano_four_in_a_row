@@ -119,6 +119,11 @@ print("Please send 1 nano to this address")
 print("Waiting for nano")
 
 previous = nano.get_previous(str(account))
+pending = nano.get_pending(str(account))
+print(previous)
+if (len(previous) == 0) and (len(pending) == 0):
+    wait_for_reply(account)
+
 
 pending = nano.get_pending(str(account))
 if (len(previous) == 0) and (len(pending) > 0):
