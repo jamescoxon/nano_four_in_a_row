@@ -177,7 +177,9 @@ print_matrix(board_matrix)
 
 while 1:
     #Your Move
-    move = input('Which Column? ')
+    move = ''
+    while move == '':
+        move = input('Which Column? ')
     if int(move) < 10:
         old_board = board.copy()
         board[int(move)] += 1
