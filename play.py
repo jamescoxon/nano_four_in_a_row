@@ -9,17 +9,18 @@ import pyqrcode
 
 BOARDWIDTH = 10
 BOARDHEIGHT = 10
+RAW_AMOUNT = 1000000000000000000000000 # 1e24
 
 def print_matrix(matrix):
     os.system('cls' if os.name == 'nt' else 'clear')
     line_num = 0
-    print('################################################')
+    print('##################################################')
     for x in range(0,10):
         matrix[0][x] = '%s' % x
 
     for x in reversed(matrix):
         print (x)
-    print('################################################')
+    print('##################################################')
 
 def get_reply(account, index, wallet_seed):
     pending = nano.get_pending(str(account))
@@ -117,10 +118,31 @@ account = nano.account_xrb(str(public_key))
 print("Account Address: ", account)
 
 print("Please send 1 nano to this address")
-data = 'xrb:' + account
-xrb_qr = pyqrcode.create(data, error='L', version=4, mode=None, encoding='iso-8859-1')
-list = []
-print(xrb_qr.terminal())
+try:
+    import matplotlib.image as mpimg
+    import matplotlib.pyplot as plt
+    # qr code gen
+    uri = "xrb:{account}?amount={raw}&label=Four%20In%20A%20Row&message=Thank%20you%20for%20playing&my&game!".format(account=account, raw=RAW_AMOUNT)
+    code = pyqrcode.create(uri, error='L', mode='binary', version=27)
+    
+    # display with tkinter (not working on macOS)
+    #code_xbm = code.xbm(scale=7, quiet_zone=5)
+    #top = tkinter.Tk()
+    #code_bmp = tkinter.BitmapImage(data=code_xbm)
+    #code_bmp.config(background="white")
+    #label = tkinter.Label(image=code_bmp)
+    #label.pack()
+    
+    # display with matplotlip
+    code.eps('qrcode.eps', scale=8, quiet_zone=7)
+    code_eps = mpimg.imread('qrcode.eps')
+    plt.imshow(code_eps)
+    plt.show(block=False)
+except Exception as e:
+    print(e)
+    data = 'xrb:' + account
+    xrb_qr = pyqrcode.create(data, error='L', version=4, mode=None, encoding='iso-8859-1')
+    print(xrb_qr.terminal())
 
 print("Waiting for nano")
 
