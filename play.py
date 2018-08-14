@@ -115,9 +115,7 @@ priv_key, pub_key = nano.seed_account(str(wallet_seed), 0)
 public_key = str(binascii.hexlify(pub_key), 'ascii')
 
 account = nano.account_xrb(str(public_key))
-print("Account Address: ", account)
 
-print("Please send 1 nano to this address")
 try:
     import matplotlib.image as mpimg
     import matplotlib.pyplot as plt
@@ -144,6 +142,8 @@ except Exception as e:
     xrb_qr = pyqrcode.create(data, error='L', version=4, mode=None, encoding='iso-8859-1')
     print(xrb_qr.terminal())
 
+print("Account Address: ", account)
+print("Please send 0.000001 Nano to this address")
 print("Waiting for nano")
 
 previous = nano.get_previous(str(account))
